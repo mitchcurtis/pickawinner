@@ -1,0 +1,5 @@
+module PickAWinner
+plugin pickawinnerplugin
+classname PickAWinnerPlugin
+depends QtQuick.Templates 2.0
+depends PickAWinner.Templates 2.0
