@@ -40,6 +40,10 @@ public:
     qreal saturationAt(const QPointF &pos) const;
     qreal lightnessAt(const QPointF &pos) const;
 
+    void setHue(qreal hue, bool emitColorChanged = true);
+    void setSaturation(qreal saturation, bool emitColorChanged = true);
+    void setLightness(qreal lightness, bool emitColorChanged = true);
+
     qreal hue;
     qreal saturation;
     qreal lightness;
@@ -78,6 +82,57 @@ qreal SaturationLightnessPickerPrivate::lightnessAt(const QPointF &pos) const
         return 1.0;
 
     return pos.x() / width;
+}
+
+void SaturationLightnessPickerPrivate::setHue(qreal hue, bool emitColorChanged)
+{
+    hue = qBound(0.0, hue, 360.0);
+
+    if (qFuzzyCompare(this->hue, hue))
+        return;
+
+    this->hue = hue;
+
+    Q_Q(SaturationLightnessPicker);
+    emit q->hueChanged();
+    if (emitColorChanged)
+        emit q->colorChanged();
+}
+
+void SaturationLightnessPickerPrivate::setSaturation(qreal saturation, bool emitColorChanged)
+{
+    saturation = qBound(0.0, saturation, 1.0);
+
+    if (qFuzzyCompare(this->saturation, saturation))
+        return;
+
+    this->saturation = saturation;
+
+    if (handle)
+        handle->setY((1.0 - this->saturation) * height - handle->height() / 2);
+
+    Q_Q(SaturationLightnessPicker);
+    emit q->saturationChanged();
+    if (emitColorChanged)
+        emit q->colorChanged();
+}
+
+void SaturationLightnessPickerPrivate::setLightness(qreal lightness, bool emitColorChanged)
+{
+    lightness = qBound(0.0, lightness, 1.0);
+
+    if (qFuzzyCompare(this->lightness, lightness))
+        return;
+
+    this->lightness = lightness;
+
+    if (handle)
+        handle->setX(this->lightness * width - handle->width() / 2);
+
+    Q_Q(SaturationLightnessPicker);
+    emit q->lightnessChanged();
+    if (emitColorChanged)
+        emit q->colorChanged();
 }
 
 SaturationLightnessPicker::SaturationLightnessPicker(QQuickItem *parent) :
@@ -172,15 +227,8 @@ qreal SaturationLightnessPicker::hue() const
 
 void SaturationLightnessPicker::setHue(qreal hue)
 {
-    hue = qBound(0.0, hue, 360.0);
-
     Q_D(SaturationLightnessPicker);
-    if (qFuzzyCompare(d->hue, hue))
-        return;
-
-    d->hue = hue;
-
-    emit hueChanged();
+    d->setHue(hue);
 }
 
 /*!
@@ -200,18 +248,8 @@ qreal SaturationLightnessPicker::saturation() const
 
 void SaturationLightnessPicker::setSaturation(qreal saturation)
 {
-    saturation = qBound(0.0, saturation, 1.0);
-
     Q_D(SaturationLightnessPicker);
-    if (qFuzzyCompare(d->saturation, saturation))
-        return;
-
-    d->saturation = saturation;
-
-    if (d->handle)
-        d->handle->setY((1.0 - d->saturation) * d->height - d->handle->height() / 2);
-
-    emit saturationChanged();
+    d->setSaturation(saturation);
 }
 
 /*!
@@ -231,18 +269,27 @@ qreal SaturationLightnessPicker::lightness() const
 
 void SaturationLightnessPicker::setLightness(qreal lightness)
 {
-    lightness = qBound(0.0, lightness, 1.0);
-
     Q_D(SaturationLightnessPicker);
-    if (qFuzzyCompare(d->lightness, lightness))
+    d->setLightness(lightness);
+}
+
+QColor SaturationLightnessPicker::color() const
+{
+    Q_D(const SaturationLightnessPicker);
+    return QColor::fromHslF(d->hue, d->saturation, d->lightness);
+}
+
+void SaturationLightnessPicker::setColor(const QColor &color)
+{
+    Q_D(SaturationLightnessPicker);
+    if (this->color() == color)
         return;
 
-    d->lightness = lightness;
-
-    if (d->handle)
-        d->handle->setX(d->lightness * d->width - d->handle->width() / 2);
-
-    emit lightnessChanged();
+    QColor hsl = color.toHsl();
+    d->setHue(hsl.hueF(), false);
+    d->setSaturation(hsl.saturationF(), false);
+    d->setLightness(hsl.lightnessF(), false);
+    emit colorChanged();
 }
 
 /*!

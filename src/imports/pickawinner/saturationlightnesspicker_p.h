@@ -1,6 +1,7 @@
 #ifndef SATURATIONLIGHTNESSPICKER_P_H
 #define SATURATIONLIGHTNESSPICKER_P_H
 
+#include <QtGui/qcolor.h>
 #include <QtQuickTemplates2/private/qquickcontrol_p.h>
 
 class SaturationLightnessPickerPrivate;
@@ -11,6 +12,7 @@ class SaturationLightnessPicker : public QQuickControl
     Q_PROPERTY(qreal hue READ hue WRITE setHue NOTIFY hueChanged)
     Q_PROPERTY(qreal saturation READ saturation WRITE setSaturation NOTIFY saturationChanged)
     Q_PROPERTY(qreal lightness READ lightness WRITE setLightness NOTIFY lightnessChanged)
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(bool pressed READ isPressed WRITE setPressed NOTIFY pressedChanged)
     Q_PROPERTY(QQuickItem *handle READ handle WRITE setHandle NOTIFY handleChanged FINAL)
 
@@ -26,6 +28,9 @@ public:
     qreal lightness() const;
     void setLightness(qreal lightness);
 
+    QColor color() const;
+    void setColor(const QColor &color);
+
     bool isPressed() const;
     void setPressed(bool pressed);
 
@@ -36,6 +41,7 @@ Q_SIGNALS:
     void hueChanged();
     void saturationChanged();
     void lightnessChanged();
+    void colorChanged();
     void pressedChanged();
     void handleChanged();
 

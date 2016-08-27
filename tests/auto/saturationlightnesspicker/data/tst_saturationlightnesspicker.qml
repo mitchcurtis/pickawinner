@@ -95,4 +95,50 @@ TestCase {
 
         control.destroy();
     }
+
+    SignalSpy {
+        id: hueSpy
+        signalName: "hueChanged"
+    }
+
+    SignalSpy {
+        id: saturationSpy
+        signalName: "saturationChanged"
+    }
+
+    SignalSpy {
+        id: lightnessSpy
+        signalName: "lightnessChanged"
+    }
+
+    SignalSpy {
+        id: colorSpy
+        signalName: "colorChanged"
+    }
+
+    function test_signals() {
+        var control = pickerComponent.createObject(testCase);
+        compare(control.hue, 0.0);
+        compare(control.saturation, 0.0);
+        compare(control.lightness, 0.0);
+
+        hueSpy.target = control;
+        saturationSpy.target = control;
+        lightnessSpy.target = control;
+        colorSpy.target = control;
+
+        control.hue = 1.0;
+        compare(hueSpy.count, 1);
+        compare(colorSpy.count, 1);
+
+        control.saturation = 1.0;
+        compare(saturationSpy.count, 1);
+        compare(colorSpy.count, 2);
+
+        control.lightness = 1.0;
+        compare(lightnessSpy.count, 1);
+        compare(colorSpy.count, 3);
+
+        control.destroy();
+    }
 }
