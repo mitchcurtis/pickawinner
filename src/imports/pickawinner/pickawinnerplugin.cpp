@@ -52,5 +52,3 @@ void PickAWinnerPlugin::registerTypes(const char *uri)
 void PickAWinnerPlugin::initializeEngine(QQmlEngine *, const char *)
 {
 }
-
-#include "pickawinnerplugin.moc"
