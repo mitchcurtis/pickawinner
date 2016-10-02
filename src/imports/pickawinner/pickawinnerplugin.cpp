@@ -32,7 +32,8 @@ void PickAWinnerPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<SaturationLightnessPicker>(uri, 1, 0, "SaturationLightnessPickerTemplate");
 
-    qmlRegisterType(QStringLiteral("SaturationLightnessPicker.qml"), uri, 1, 0, "SaturationLightnessPicker");
+    qmlRegisterType(QUrl::fromLocalFile(baseUrl().toLocalFile() + QStringLiteral("/SaturationLightnessPicker.qml")),
+        uri, 1, 0, "SaturationLightnessPicker");
 }
 
 void PickAWinnerPlugin::initializeEngine(QQmlEngine *, const char *)
