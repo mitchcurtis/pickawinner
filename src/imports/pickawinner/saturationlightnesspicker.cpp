@@ -286,8 +286,8 @@ void SaturationLightnessPicker::setColor(const QColor &color)
         return;
 
     QColor hsl = color.toHsl();
-    d->setHue(hsl.hueF(), false);
-    d->setSaturation(hsl.saturationF(), false);
+    d->setHue(hsl.hslHueF(), false);
+    d->setSaturation(hsl.hslSaturationF(), false);
     d->setLightness(hsl.lightnessF(), false);
     emit colorChanged();
 }
