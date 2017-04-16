@@ -31,6 +31,7 @@ public:
         hue(0),
         saturation(0),
         lightness(0),
+        alpha(0),
         pressed(false),
         handle(nullptr)
     {
@@ -47,6 +48,7 @@ public:
     qreal hue;
     qreal saturation;
     qreal lightness;
+    qreal alpha;
     bool pressed;
     QPointF pressPoint;
     QQuickItem *handle;
@@ -144,7 +146,7 @@ SaturationLightnessPicker::SaturationLightnessPicker(QQuickItem *parent) :
 }
 
 /*!
-    \qmlproperty real QtQuick.Controls::SaturationLightnessPicker::hue
+    \qmlproperty real PickAWinner::SaturationLightnessPicker::hue
 
     This property controls the hue of the colors that are displayed on the
     picker. It is typically bound to a hue slider:
@@ -232,7 +234,7 @@ void SaturationLightnessPicker::setHue(qreal hue)
 }
 
 /*!
-    \qmlproperty real QtQuick.Controls::SaturationLightnessPicker::saturation
+    \qmlproperty real PickAWinner::SaturationLightnessPicker::saturation
 
     This property holds the saturation.
 
@@ -253,7 +255,7 @@ void SaturationLightnessPicker::setSaturation(qreal saturation)
 }
 
 /*!
-    \qmlproperty real QtQuick.Controls::SaturationLightnessPicker::lightness
+    \qmlproperty real PickAWinner::SaturationLightnessPicker::lightness
 
     This property holds the lightness.
 
@@ -273,10 +275,37 @@ void SaturationLightnessPicker::setLightness(qreal lightness)
     d->setLightness(lightness);
 }
 
+/*!
+    \qmlproperty real PickAWinner::SaturationLightnessPicker::alpha
+
+    This property holds the alpha.
+
+    The default value is \c 0.0.
+
+    \sa hue, saturation, lightness
+*/
+qreal SaturationLightnessPicker::alpha() const
+{
+    Q_D(const SaturationLightnessPicker);
+    return d->alpha;
+}
+
+void SaturationLightnessPicker::setAlpha(qreal alpha)
+{
+    Q_D(SaturationLightnessPicker);
+    alpha = qBound(0.0, alpha, 1.0);
+    if (d->alpha == alpha)
+        return;
+
+    d->alpha = alpha;
+    emit alphaChanged();
+    emit colorChanged();
+}
+
 QColor SaturationLightnessPicker::color() const
 {
     Q_D(const SaturationLightnessPicker);
-    return QColor::fromHslF(d->hue, d->saturation, d->lightness);
+    return QColor::fromHslF(d->hue, d->saturation, d->lightness, d->alpha);
 }
 
 void SaturationLightnessPicker::setColor(const QColor &color)
@@ -293,7 +322,7 @@ void SaturationLightnessPicker::setColor(const QColor &color)
 }
 
 /*!
-    \qmlproperty bool QtQuick.Controls::SaturationLightnessPicker::pressed
+    \qmlproperty bool PickAWinner::SaturationLightnessPicker::pressed
 
     This property holds whether the slider is pressed.
 */
@@ -315,7 +344,7 @@ void SaturationLightnessPicker::setPressed(bool pressed)
 }
 
 /*!
-    \qmlproperty Item QtQuick.Controls::SaturationLightnessPicker::handle
+    \qmlproperty Item PickAWinner::SaturationLightnessPicker::handle
 
     This property holds the handle item.
 

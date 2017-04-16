@@ -12,6 +12,7 @@ class SaturationLightnessPicker : public QQuickControl
     Q_PROPERTY(qreal hue READ hue WRITE setHue NOTIFY hueChanged)
     Q_PROPERTY(qreal saturation READ saturation WRITE setSaturation NOTIFY saturationChanged)
     Q_PROPERTY(qreal lightness READ lightness WRITE setLightness NOTIFY lightnessChanged)
+    Q_PROPERTY(qreal alpha READ alpha WRITE setAlpha NOTIFY alphaChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(bool pressed READ isPressed WRITE setPressed NOTIFY pressedChanged)
     Q_PROPERTY(QQuickItem *handle READ handle WRITE setHandle NOTIFY handleChanged FINAL)
@@ -28,6 +29,9 @@ public:
     qreal lightness() const;
     void setLightness(qreal lightness);
 
+    qreal alpha() const;
+    void setAlpha(qreal alpha);
+
     QColor color() const;
     void setColor(const QColor &color);
 
@@ -41,6 +45,7 @@ Q_SIGNALS:
     void hueChanged();
     void saturationChanged();
     void lightnessChanged();
+    void alphaChanged();
     void colorChanged();
     void pressedChanged();
     void handleChanged();

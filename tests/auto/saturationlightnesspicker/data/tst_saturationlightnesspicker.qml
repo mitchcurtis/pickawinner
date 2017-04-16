@@ -112,6 +112,11 @@ TestCase {
     }
 
     SignalSpy {
+        id: alphaSpy
+        signalName: "alphaChanged"
+    }
+
+    SignalSpy {
         id: colorSpy
         signalName: "colorChanged"
     }
@@ -121,10 +126,12 @@ TestCase {
         compare(control.hue, 0.0);
         compare(control.saturation, 0.0);
         compare(control.lightness, 0.0);
+        compare(control.alpha, 0.0);
 
         hueSpy.target = control;
         saturationSpy.target = control;
         lightnessSpy.target = control;
+        alphaSpy.target = control;
         colorSpy.target = control;
 
         control.hue = 1.0;
@@ -138,6 +145,15 @@ TestCase {
         control.lightness = 1.0;
         compare(lightnessSpy.count, 1);
         compare(colorSpy.count, 3);
+
+        control.alpha = 0.5;
+        compare(alphaSpy.count, 1);
+        compare(colorSpy.count, 4);
+
+        compare(control.color.r, 1);
+        compare(control.color.g, 1);
+        compare(control.color.b, 1);
+        compare(control.color.a, 0.5);
 
         control.destroy();
     }
