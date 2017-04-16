@@ -44,6 +44,7 @@ public:
     void setHue(qreal hue, bool emitColorChanged = true);
     void setSaturation(qreal saturation, bool emitColorChanged = true);
     void setLightness(qreal lightness, bool emitColorChanged = true);
+    void setAlpha(qreal alpha, bool emitColorChanged = true);
 
     qreal hue;
     qreal saturation;
@@ -133,6 +134,19 @@ void SaturationLightnessPickerPrivate::setLightness(qreal lightness, bool emitCo
 
     Q_Q(SaturationLightnessPicker);
     emit q->lightnessChanged();
+    if (emitColorChanged)
+        emit q->colorChanged();
+}
+
+void SaturationLightnessPickerPrivate::setAlpha(qreal alpha, bool emitColorChanged)
+{
+    alpha = qBound(0.0, alpha, 1.0);
+    if (this->alpha == alpha)
+        return;
+
+    Q_Q(SaturationLightnessPicker);
+    this->alpha = alpha;
+    emit q->alphaChanged();
     if (emitColorChanged)
         emit q->colorChanged();
 }
@@ -293,13 +307,7 @@ qreal SaturationLightnessPicker::alpha() const
 void SaturationLightnessPicker::setAlpha(qreal alpha)
 {
     Q_D(SaturationLightnessPicker);
-    alpha = qBound(0.0, alpha, 1.0);
-    if (d->alpha == alpha)
-        return;
-
-    d->alpha = alpha;
-    emit alphaChanged();
-    emit colorChanged();
+    d->setAlpha(alpha);
 }
 
 QColor SaturationLightnessPicker::color() const
@@ -318,6 +326,7 @@ void SaturationLightnessPicker::setColor(const QColor &color)
     d->setHue(hsl.hslHueF(), false);
     d->setSaturation(hsl.hslSaturationF(), false);
     d->setLightness(hsl.lightnessF(), false);
+    d->setAlpha(color.alphaF(), false);
     emit colorChanged();
 }
 

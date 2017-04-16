@@ -121,7 +121,7 @@ TestCase {
         signalName: "colorChanged"
     }
 
-    function test_signals() {
+    function test_setters() {
         var control = pickerComponent.createObject(testCase);
         compare(control.hue, 0.0);
         compare(control.saturation, 0.0);
@@ -150,10 +150,18 @@ TestCase {
         compare(alphaSpy.count, 1);
         compare(colorSpy.count, 4);
 
-        compare(control.color.r, 1);
-        compare(control.color.g, 1);
-        compare(control.color.b, 1);
-        compare(control.color.a, 0.5);
+        var fuzz = 0.0001;
+        fuzzyCompare(control.color.r, 1, fuzz);
+        fuzzyCompare(control.color.g, 1, fuzz);
+        fuzzyCompare(control.color.b, 1, fuzz);
+        fuzzyCompare(control.color.a, 0.5, fuzz);
+
+        control.color = Qt.hsla(0.3, 0.4, 0.5, 0.6)
+        fuzzyCompare(control.color.hslHue, 0.3, fuzz);
+        fuzzyCompare(control.color.hslSaturation, 0.4, fuzz);
+        fuzzyCompare(control.color.hslLightness, 0.5, fuzz);
+        fuzzyCompare(control.color.a, 0.6, fuzz);
+        compare(colorSpy.count, 5);
 
         control.destroy();
     }
