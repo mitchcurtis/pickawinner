@@ -41,10 +41,20 @@ public:
     qreal saturationAt(const QPointF &pos) const;
     qreal lightnessAt(const QPointF &pos) const;
 
-    void setHue(qreal hue, bool emitColorChanged = true);
-    void setSaturation(qreal saturation, bool emitColorChanged = true);
-    void setLightness(qreal lightness, bool emitColorChanged = true);
-    void setAlpha(qreal alpha, bool emitColorChanged = true);
+    enum ColorChangedEmission {
+        DontEmitColorChanged,
+        EmitColorChanged
+    };
+
+    enum ColorPickedEmission {
+        DontEmitColorPicked,
+        EmitColorPicked
+    };
+
+    bool setHue(qreal hue, ColorChangedEmission emitColorChanged, ColorPickedEmission emitColorPicked);
+    bool setSaturation(qreal saturation, ColorChangedEmission emitColorChanged, ColorPickedEmission emitColorPicked);
+    bool setLightness(qreal lightness, ColorChangedEmission emitColorChanged, ColorPickedEmission emitColorPicked);
+    bool setAlpha(qreal alpha, ColorChangedEmission emitColorChanged, ColorPickedEmission emitColorPicked);
 
     qreal hue;
     qreal saturation;
@@ -87,27 +97,30 @@ qreal SaturationLightnessPickerPrivate::lightnessAt(const QPointF &pos) const
     return pos.x() / width;
 }
 
-void SaturationLightnessPickerPrivate::setHue(qreal hue, bool emitColorChanged)
+bool SaturationLightnessPickerPrivate::setHue(qreal hue, ColorChangedEmission emitColorChanged, ColorPickedEmission emitColorPicked)
 {
     hue = qBound(0.0, hue, 360.0);
 
     if (qFuzzyCompare(this->hue, hue))
-        return;
+        return false;
 
     this->hue = hue;
 
     Q_Q(SaturationLightnessPicker);
     emit q->hueChanged();
-    if (emitColorChanged)
+    if (emitColorChanged == EmitColorChanged)
         emit q->colorChanged();
+    if (emitColorPicked == EmitColorPicked)
+        emit q->colorPicked();
+    return true;
 }
 
-void SaturationLightnessPickerPrivate::setSaturation(qreal saturation, bool emitColorChanged)
+bool SaturationLightnessPickerPrivate::setSaturation(qreal saturation, ColorChangedEmission emitColorChanged, ColorPickedEmission emitColorPicked)
 {
     saturation = qBound(0.0, saturation, 1.0);
 
     if (qFuzzyCompare(this->saturation, saturation))
-        return;
+        return false;
 
     this->saturation = saturation;
 
@@ -116,16 +129,19 @@ void SaturationLightnessPickerPrivate::setSaturation(qreal saturation, bool emit
 
     Q_Q(SaturationLightnessPicker);
     emit q->saturationChanged();
-    if (emitColorChanged)
+    if (emitColorChanged == EmitColorChanged)
         emit q->colorChanged();
+    if (emitColorPicked == EmitColorPicked)
+        emit q->colorPicked();
+    return true;
 }
 
-void SaturationLightnessPickerPrivate::setLightness(qreal lightness, bool emitColorChanged)
+bool SaturationLightnessPickerPrivate::setLightness(qreal lightness, ColorChangedEmission emitColorChanged, ColorPickedEmission emitColorPicked)
 {
     lightness = qBound(0.0, lightness, 1.0);
 
     if (qFuzzyCompare(this->lightness, lightness))
-        return;
+        return false;
 
     this->lightness = lightness;
 
@@ -134,21 +150,27 @@ void SaturationLightnessPickerPrivate::setLightness(qreal lightness, bool emitCo
 
     Q_Q(SaturationLightnessPicker);
     emit q->lightnessChanged();
-    if (emitColorChanged)
+    if (emitColorChanged == EmitColorChanged)
         emit q->colorChanged();
+    if (emitColorPicked == EmitColorPicked)
+        emit q->colorPicked();
+    return true;
 }
 
-void SaturationLightnessPickerPrivate::setAlpha(qreal alpha, bool emitColorChanged)
+bool SaturationLightnessPickerPrivate::setAlpha(qreal alpha, ColorChangedEmission emitColorChanged, ColorPickedEmission emitColorPicked)
 {
     alpha = qBound(0.0, alpha, 1.0);
     if (this->alpha == alpha)
-        return;
+        return false;
 
     Q_Q(SaturationLightnessPicker);
     this->alpha = alpha;
     emit q->alphaChanged();
-    if (emitColorChanged)
+    if (emitColorChanged == EmitColorChanged)
         emit q->colorChanged();
+    if (emitColorPicked == EmitColorPicked)
+        emit q->colorPicked();
+    return true;
 }
 
 SaturationLightnessPicker::SaturationLightnessPicker(QQuickItem *parent) :
@@ -244,7 +266,8 @@ qreal SaturationLightnessPicker::hue() const
 void SaturationLightnessPicker::setHue(qreal hue)
 {
     Q_D(SaturationLightnessPicker);
-    d->setHue(hue);
+    d->setHue(hue, SaturationLightnessPickerPrivate::EmitColorChanged,
+        SaturationLightnessPickerPrivate::DontEmitColorPicked);
 }
 
 /*!
@@ -265,7 +288,8 @@ qreal SaturationLightnessPicker::saturation() const
 void SaturationLightnessPicker::setSaturation(qreal saturation)
 {
     Q_D(SaturationLightnessPicker);
-    d->setSaturation(saturation);
+    d->setSaturation(saturation, SaturationLightnessPickerPrivate::EmitColorChanged,
+        SaturationLightnessPickerPrivate::DontEmitColorPicked);
 }
 
 /*!
@@ -286,7 +310,8 @@ qreal SaturationLightnessPicker::lightness() const
 void SaturationLightnessPicker::setLightness(qreal lightness)
 {
     Q_D(SaturationLightnessPicker);
-    d->setLightness(lightness);
+    d->setLightness(lightness, SaturationLightnessPickerPrivate::EmitColorChanged,
+        SaturationLightnessPickerPrivate::DontEmitColorPicked);
 }
 
 /*!
@@ -307,7 +332,8 @@ qreal SaturationLightnessPicker::alpha() const
 void SaturationLightnessPicker::setAlpha(qreal alpha)
 {
     Q_D(SaturationLightnessPicker);
-    d->setAlpha(alpha);
+    d->setAlpha(alpha, SaturationLightnessPickerPrivate::EmitColorChanged,
+        SaturationLightnessPickerPrivate::DontEmitColorPicked);
 }
 
 QColor SaturationLightnessPicker::color() const
@@ -323,10 +349,14 @@ void SaturationLightnessPicker::setColor(const QColor &color)
         return;
 
     QColor hsl = color.toHsl();
-    d->setHue(hsl.hslHueF(), false);
-    d->setSaturation(hsl.hslSaturationF(), false);
-    d->setLightness(hsl.lightnessF(), false);
-    d->setAlpha(color.alphaF(), false);
+    auto dontEmitColorChanged = SaturationLightnessPickerPrivate::DontEmitColorChanged;
+    auto dontEmitColorPicked = SaturationLightnessPickerPrivate::DontEmitColorPicked;
+
+    d->setHue(hsl.hslHueF(), dontEmitColorChanged, dontEmitColorPicked);
+    d->setSaturation(hsl.hslSaturationF(), dontEmitColorChanged, dontEmitColorPicked);
+    d->setLightness(hsl.lightnessF(), dontEmitColorChanged, dontEmitColorPicked);
+    d->setAlpha(color.alphaF(), dontEmitColorChanged, dontEmitColorPicked);
+
     emit colorChanged();
 }
 
@@ -460,16 +490,15 @@ void SaturationLightnessPicker::mousePressEvent(QMouseEvent *event)
     QQuickControl::mousePressEvent(event);
     d->pressPoint = event->pos();
     setPressed(true);
-    setSaturation(d->saturationAt(event->pos()));
-    setLightness(d->lightnessAt(event->pos()));
+
+    updateValuesForPos(event->pos());
 }
 
 void SaturationLightnessPicker::mouseMoveEvent(QMouseEvent *event)
 {
-    Q_D(SaturationLightnessPicker);
     QQuickControl::mouseMoveEvent(event);
-    setSaturation(d->saturationAt(event->pos()));
-    setLightness(d->lightnessAt(event->pos()));
+
+    updateValuesForPos(event->pos());
 }
 
 void SaturationLightnessPicker::mouseReleaseEvent(QMouseEvent *event)
@@ -477,8 +506,8 @@ void SaturationLightnessPicker::mouseReleaseEvent(QMouseEvent *event)
     Q_D(SaturationLightnessPicker);
     QQuickControl::mouseReleaseEvent(event);
     d->pressPoint = QPoint();
-    setSaturation(d->saturationAt(event->pos()));
-    setLightness(d->lightnessAt(event->pos()));
+
+    updateValuesForPos(event->pos());
 }
 
 void SaturationLightnessPicker::mouseUngrabEvent()
@@ -487,6 +516,23 @@ void SaturationLightnessPicker::mouseUngrabEvent()
     QQuickControl::mouseUngrabEvent();
     d->pressPoint = QPoint();
     setPressed(false);
+}
+
+void SaturationLightnessPicker::updateValuesForPos(const QPoint &pos)
+{
+    Q_D(SaturationLightnessPicker);
+    auto dontEmitColorChanged = SaturationLightnessPickerPrivate::DontEmitColorChanged;
+    auto dontEmitColorPicked = SaturationLightnessPickerPrivate::DontEmitColorPicked;
+
+    const bool saturationChanged = d->setSaturation(d->saturationAt(pos),
+        dontEmitColorChanged, dontEmitColorPicked);
+    const bool lightnessChanged = d->setLightness(d->lightnessAt(pos),
+        dontEmitColorChanged, dontEmitColorPicked);
+
+    if (saturationChanged || lightnessChanged) {
+        emit colorChanged();
+        emit colorPicked();
+    }
 }
 
 QT_END_NAMESPACE

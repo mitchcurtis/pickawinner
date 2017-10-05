@@ -47,6 +47,7 @@ Q_SIGNALS:
     void lightnessChanged();
     void alphaChanged();
     void colorChanged();
+    void colorPicked();
     void pressedChanged();
     void handleChanged();
 
@@ -68,6 +69,8 @@ protected:
     void mouseUngrabEvent() override;
 
 private:
+    void updateValuesForPos(const QPoint &pos);
+
     Q_DISABLE_COPY(SaturationLightnessPicker)
     Q_DECLARE_PRIVATE(SaturationLightnessPicker)
 };
