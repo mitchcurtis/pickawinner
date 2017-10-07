@@ -22,6 +22,12 @@ QT_BEGIN_NAMESPACE
     \sa {Customizing SaturationLightnessPicker}, {Input Controls}
 */
 
+/*!
+    \qmlsignal QtQuick.Controls::SaturationLightnessPicker::colorPicked()
+
+    This signal is emitted when the colour is picked or changed by the user interactively.
+*/
+
 class SaturationLightnessPickerPrivate : public QQuickControlPrivate
 {
     Q_DECLARE_PUBLIC(SaturationLightnessPicker)
@@ -414,28 +420,34 @@ void SaturationLightnessPicker::setHandle(QQuickItem *handle)
     emit handleChanged();
 }
 
+static const qreal changeAmount = 0.01;
+
 void SaturationLightnessPicker::increaseSaturation()
 {
     Q_D(SaturationLightnessPicker);
-    setSaturation(d->saturation + 0.05);
+    d->setSaturation(d->saturation + changeAmount, SaturationLightnessPickerPrivate::EmitColorChanged,
+        SaturationLightnessPickerPrivate::EmitColorPicked);
 }
 
 void SaturationLightnessPicker::decreaseSaturation()
 {
     Q_D(SaturationLightnessPicker);
-    setSaturation(d->saturation - 0.05);
+    d->setSaturation(d->saturation - changeAmount, SaturationLightnessPickerPrivate::EmitColorChanged,
+        SaturationLightnessPickerPrivate::EmitColorPicked);
 }
 
 void SaturationLightnessPicker::increaseLightness()
 {
     Q_D(SaturationLightnessPicker);
-    setLightness(d->lightness + 0.05);
+    d->setLightness(d->lightness + changeAmount, SaturationLightnessPickerPrivate::EmitColorChanged,
+        SaturationLightnessPickerPrivate::EmitColorPicked);
 }
 
 void SaturationLightnessPicker::decreaseLightness()
 {
     Q_D(SaturationLightnessPicker);
-    setLightness(d->lightness - 0.05);
+    d->setLightness(d->lightness - changeAmount, SaturationLightnessPickerPrivate::EmitColorChanged,
+        SaturationLightnessPickerPrivate::EmitColorPicked);
 }
 
 void SaturationLightnessPicker::componentComplete()
